@@ -6,17 +6,22 @@ It is possible to use [`react-native-openai-jsx`](https://github.com/cawfree/rea
 For example:
 
 ```typescript
+import { Alert } from 'react-native';
 import { Prompt } from 'react-native-openai-jsx';
 
-<Prompt
-  extraProps={React.useMemo(() => ({
-    onPress: (message: string) => Alert.alert(message),
-  }), [])}
-  prompt={[
-    'Provide a complete example of a React Native View component which contains a big Button in the center with the text "Press Me".',
-    'When the Button is pressed, it must call a function prop passed into the component called onPress with the parameter \"Hello from OpenAI!\".',
-  ].join(' ')}
-/>
+export default function App(): JSX.Element {
+  return (
+    <Prompt
+      extraProps={React.useMemo(() => ({
+        onPress: (message: string) => Alert.alert(message),
+      }), [])}
+      prompt={[
+        'Provide a complete example of a React Native View component which contains a big Button in the center with the text "Press Me".',
+        'When the Button is pressed, it must call a function prop passed into the component called onPress with the parameter \"Hello from OpenAI!\".',
+      ].join(' ')}
+    />
+  );
+}
 ```
 
 It might seem totally crazy, but this actually _works_! By using the [`openai`](https://github.com/openai/openai-node) client library, we can use their sophisticated [__Machine Learning Model__](https://openai.com/blog/chatgpt/) to imagine functional React Native applications for us. At runtime, we can use [`@babel/runtime`](https://github.com/babel/babel/tree/master/packages/babel-runtime) to transpile the auto-generated module into runtime-friendly JavaScript and have this execute on top of a [`react-native-wormhole`](https://github.com/cawfree/react-native-wormhole).
