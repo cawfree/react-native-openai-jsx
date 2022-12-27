@@ -1,5 +1,5 @@
 # react-native-openai-jsx
-⚛️ 🧪 🤖 Use OpenAI to generate functioning [__React Native__](https://reactnative.dev) components! [__See it in action!__](https://twitter.com/cawfree/status/1603234088776867840)
+⚛️ 🧪 🤖 Use OpenAI to generate functioning [__React Native__](https://reactnative.dev) components! [__See it in action! 🎬__](https://twitter.com/cawfree/status/1603234088776867840)
 
 It is possible to use [`react-native-openai-jsx`](https://github.com/cawfree/react-native-openai-jsx) to create real, working React Native applications just by providing some high-level descriptions about what you'd like to see.
 
