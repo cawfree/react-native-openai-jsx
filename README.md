@@ -6,6 +6,8 @@ It is possible to use [`react-native-openai-jsx`](https://github.com/cawfree/rea
 For example:
 
 ```typescript
+import { Prompt } from 'react-native-openai-jsx';
+
 <Prompt
   extraProps={React.useMemo(() => ({
     onPress: (message: string) => Alert.alert(message),
@@ -53,9 +55,9 @@ cd example/
 OPENAI_API_KEY="<your-api-key>" yarn (ios|android|web)
 ```
 
-### 🦄 `<Prompt />` Props
+### 🦄 Configuration
 
-The `Prompt` component exposes all of the interface capabilities to start creating and customizing your own language model [__prompts__](https://en.wikipedia.org/wiki/Prompt_engineering).
+The `<Prompt />` component exposes all of the interface capabilities to start creating and customizing your own language model [__prompts__](https://en.wikipedia.org/wiki/Prompt_engineering).
 
 | Name                 | Type                    | Description                                                                                                                                                                                                        | Default Value                                                    |
 |----------------------|-------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------|
@@ -66,7 +68,7 @@ The `Prompt` component exposes all of the interface capabilities to start creati
 | `extraProps`         | `<T>`                   | A custom object you can use to pass into OpenGPT. For example, you can pass a callback function and instruct the machine learning model that it exists as a possible prop.                                         | `{}`                                                             |
 | `Wormhole`           | `React.FC`              | A [`Wormhole`](https://github.com/cawfree/react-native-wormhole). This can be used to include support for additional libraries such as [`react-native-svg`](https://github.com/software-mansion/react-native-svg). | `DefaultWormhole`                                                |
 
-Please do not forget, in order to have __any__ success with this library whatsoever you __must__ inform the machine learning model that you are trying to create a React Native application as part of your [__prompt__](https://en.wikipedia.org/wiki/Prompt_engineering).
+Please do not forget, in order to have __any__ success with this library whatsoever you __must__ inform the machine learning model that you are trying to create a React Native application as part of your prompt.
 
 ### ✌️ License
 [__MIT__](./LICENSE)
