@@ -19,7 +19,7 @@ export const Prompt = React.memo(
       <DefaultPrompt
         {...extraProps}
         prompt={[
-          'Please create a React Native application with the following content:',
+          'Without any supporting commentary, create a React Native function component that may import only from "react" and "react-native" which contains the following content:',
           ...prompt,
         ].join(' ')}
         completionSettings={completionSettings}
