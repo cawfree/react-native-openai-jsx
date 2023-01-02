@@ -1,11 +1,9 @@
 import * as React from 'react';
 import {
   StyleProp,
-  ScrollView,
   StyleSheet,
   View,
   ViewStyle,
-  Text,
 } from 'react-native';
 import {createWormhole} from 'react-native-wormhole';
 // @ts-ignore
@@ -27,6 +25,9 @@ const {Wormhole: DefaultWormhole} = createWormhole({
   verify: () => Promise.resolve(true),
 });
 
+const shouldTranspile = (src: string) =>
+  Babel.transform(src, { presets: ['es2015', 'react'] }).code;
+
 function Prompt<T>({
   completionSettings,
   style,
@@ -34,6 +35,9 @@ function Prompt<T>({
   extraProps,
   Wormhole = DefaultWormhole,
   prompt,
+  onError = console.error,
+  defaultModule = "import * as React from 'react'; export default React.Fragment;",
+  renderLoading,
 }: {
   readonly prompt?: string;
   readonly completionSettings: Omit<Parameters<typeof useCompletion>[0], 'prompt'>;
@@ -41,28 +45,73 @@ function Prompt<T>({
   readonly debug?: boolean;
   readonly extraProps?: T;
   readonly Wormhole?: ReturnType<typeof createWormhole>['Wormhole'];
+  readonly onError?: (e: unknown) => void;
+  readonly defaultModule?: string;
+  readonly renderLoading?: () => JSX.Element;
 }): JSX.Element {
 
-  const {completion, error} = useCompletion({...completionSettings, prompt});
+  const {
+    loading,
+    completion,
+    error: maybeCompletionError,
+  } = useCompletion({...completionSettings, prompt});
 
-  const choice = completion?.choices?.[0]?.text || "import * as React from 'react'; export default React.Fragment;";
+  const maybeChoice = completion?.choices?.[0]?.text;
 
-  const onError = React.useCallback(() => undefined, []);
+  const {
+    choice,
+    source,
+    error: maybeTranspileError,
+  } = React.useMemo(() => {
+    try {
+      if (maybeCompletionError) throw maybeCompletionError;
+
+      if (typeof maybeChoice !== 'string' || !maybeChoice.length)
+        return {choice: defaultModule, source: shouldTranspile(defaultModule), error: undefined};
+
+      return {
+        choice: maybeChoice,
+        source: shouldTranspile(maybeChoice),
+        error: undefined,
+      };
+    } catch (cause) {
+      return {
+        choice: defaultModule,
+        source: shouldTranspile(defaultModule),
+        // @ts-expect-error versioning
+        error: new Error('Failed to transpile module.', {cause}),
+      };
+    }
+  }, [maybeChoice, maybeCompletionError, defaultModule]);
+
+  React.useEffect(() => {
+    if (!debug) return;
+    choice && console.warn(choice);
+  }, [debug, choice]);
+
+  React.useEffect(() => {
+    maybeTranspileError && console.error(maybeTranspileError);
+  }, [maybeTranspileError]);
+
+  React.useEffect(() => {
+    if (!debug) return;
+    source && console.warn(source);
+  }, [debug, source]);
 
   return (
     <View style={style}>
       <View style={StyleSheet.absoluteFill}>
-        <Wormhole
-          {...extraProps}
-          source={Babel.transform(choice, { presets: ['es2015', 'react'] }).code}
-          dangerouslySetInnerJSX
-          onError={onError}
-        />
-        {Boolean(debug) && !!(choice || error) && (
-          <ScrollView style={StyleSheet.absoluteFill}>
-            <Text children={choice || String(error)} />
-          </ScrollView>
-        )}
+        {loading
+          ? renderLoading?.() || null
+          : (
+            <Wormhole
+              {...extraProps}
+              source={source}
+              dangerouslySetInnerJSX
+              onError={onError}
+              renderLoading={renderLoading}
+            />
+          )}
       </View>
     </View>
   );

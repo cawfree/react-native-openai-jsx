@@ -4,22 +4,22 @@ import {StyleSheet} from 'react-native';
 import {Prompt} from '../../prompt';
 
 export const Home = React.memo(function Home(): JSX.Element {
-  const onPressCallback = React.useCallback(() => {
+  const onPressUsingSVGs = React.useCallback(() => {
     console.warn('hihihih');
   }, []);
 
   return (
     <Prompt
+      key={Math.random()}
       style={StyleSheet.absoluteFill}
       extraProps={React.useMemo(() => ({
-        onPressCallback,
-      }), [onPressCallback])}
+        onPressUsingSVGs,
+      }), [onPressUsingSVGs])}
       prompt={[
-        "A professional screen.",
+        "A professional screen that uses a gothy color palette.",
         "A title which says \"Using OpenAI in React Native\"",
-        "A small description about how OpenAI can be used to create dynamic React Native layouts.",
-        "It should render a button with the title \"Callback\" which is passed the prop \"onPressCallback\"",
-        "Also it should fade in opacity.",
+        "A medium-length description about how OpenAI can be used to create dynamic React Native layouts.",
+        "Also it should fade in opacity when the component is mounted.",
       ]}
     />
   );
